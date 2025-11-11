@@ -1,3 +1,4 @@
+//lib/feature/onbaording/onboarding_screen.dart
 import 'package:flutter/material.dart';
 import 'package:ridesharing/app/text_style.dart';
 import 'package:ridesharing/common/constant/assets.dart';

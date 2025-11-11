@@ -1,3 +1,4 @@
+//lib/common/constant/assets.dart
 class Assets {
   //Icons
   static const String walletFillIcon = "assets/icons/wallet fill.svg";

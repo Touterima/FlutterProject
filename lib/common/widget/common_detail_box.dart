@@ -1,3 +1,4 @@
+//lib/common/widget/common_detail_box.dart
 import 'package:flutter/material.dart';
 import 'package:ridesharing/common/theme.dart';
 

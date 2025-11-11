@@ -1,3 +1,4 @@
+//lib/common/constant/constants.dart
 class Constants {
   static const appleStoreId = "6450754841";
   static const kamanaAppleStoreId = "6453154815";

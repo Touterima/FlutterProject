@@ -1,3 +1,4 @@
+//lib/common/model/product_model.dart
 class ProductModel {
   int? id;
   String? title;

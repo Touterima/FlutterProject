@@ -1,3 +1,4 @@
+//lib/feature/onbaording/splash_screen.dart
 import 'package:flutter/material.dart';
 import 'package:ridesharing/common/constant/assets.dart';
 import 'package:ridesharing/feature/auth/welcomeScreen/screen/welcome_page.dart';
