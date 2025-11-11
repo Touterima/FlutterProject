@@ -1,4 +1,165 @@
 // lib/feature/dashboard/trips/trip_map_widget.dart
+
+import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:ridesharing/app/text_style.dart';
+import 'package:ridesharing/common/theme.dart';
+import 'package:ridesharing/common/utils/size_utils.dart';
+import 'package:ridesharing/common/widget/common_container.dart';
+
+class TripMapWidget extends StatefulWidget {
+  final Map<String, dynamic> routeData;
+  final String fromCity;
+  final String toCity;
+
+  const TripMapWidget({
+    super.key,
+    required this.routeData,
+    required this.fromCity,
+    required this.toCity,
+  });
+
+  @override
+  State<TripMapWidget> createState() => _TripMapWidgetState();
+}
+
+class _TripMapWidgetState extends State<TripMapWidget> {
+  late MapController _mapController;
+
+  @override
+  void initState() {
+    super.initState();
+    _mapController = MapController();
+  }
+
+  List<LatLng> _getRoutePoints() {
+    final geometry = widget.routeData['geometry'] as List;
+    return geometry
+        .map((coord) => LatLng(coord[1].toDouble(), coord[0].toDouble()))
+        .toList();
+  }
+
+  LatLng _getFromCoords() {
+    final coords = widget.routeData['from_coords'] as Map<String, double>;
+    return LatLng(coords['latitude']!, coords['longitude']!);
+  }
+
+  LatLng _getToCoords() {
+    final coords = widget.routeData['to_coords'] as Map<String, double>;
+    return LatLng(coords['latitude']!, coords['longitude']!);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final routePoints = _getRoutePoints();
+    final fromCoords = _getFromCoords();
+    final toCoords = _getToCoords();
+
+    return CommonContainer(
+      appBarTitle: "Carte du trajet",
+      showBackBotton: true,
+      body: Column(
+        children: [
+          _buildHeader(),
+          SizedBox(height: 16.hp),
+
+          // ✅ Carte avec affichage correct
+          Expanded(
+            child: FlutterMap(
+              mapController: _mapController,
+              options: MapOptions(
+                initialCenter: LatLng(
+                  (fromCoords.latitude + toCoords.latitude) / 2,
+                  (fromCoords.longitude + toCoords.longitude) / 2,
+                ),
+                initialZoom: 7.5,
+                interactionOptions:
+                    const InteractionOptions(flags: InteractiveFlag.all),
+              ),
+              children: [
+                TileLayer(
+                  urlTemplate:
+                      'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  userAgentPackageName: 'com.example.rideapp',
+                ),
+                PolylineLayer(
+                  polylines: [
+                    Polyline(
+                      points: routePoints,
+                      strokeWidth: 5.0,
+                      color: CustomTheme.appColor,
+                    ),
+                  ],
+                ),
+                MarkerLayer(
+                  markers: [
+                    Marker(
+                      point: fromCoords,
+                      width: 40,
+                      height: 40,
+                      child: const Icon(Icons.flag, color: Colors.green, size: 32),
+                    ),
+                    Marker(
+                      point: toCoords,
+                      width: 40,
+                      height: 40,
+                      child: const Icon(Icons.location_on,
+                          color: Colors.red, size: 32),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          SizedBox(height: 16.hp),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [CustomTheme.appColor, CustomTheme.appColor.withOpacity(0.8)],
+        ),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(widget.fromCity,
+              style: PoppinsTextStyles.titleMediumRegular
+                  .copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
+          const Icon(Icons.arrow_forward, color: Colors.white),
+          Text(widget.toCity,
+              style: PoppinsTextStyles.titleMediumRegular
+                  .copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _mapController.dispose();
+    super.dispose();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+/*
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -361,3 +522,4 @@ class _TripMapWidgetState extends State<TripMapWidget> {
     super.dispose();
   }
 }
+*/
